@@ -25,3 +25,17 @@ class LSTM(nn.Module):
         out, _ = self.lstm(x, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out
+    
+    def evaluate_model(self,model, criterion,test_loader, device):
+        model.eval()
+        test_loss = 0.0
+        with torch.no_grad():
+            for sequences, labels in test_loader:
+                sequences, labels = sequences.to(device), labels.to(device)
+                outputs = model(sequences)
+                loss = criterion(outputs, labels)
+                test_loss += loss.item()
+
+        average_test_loss = test_loss / len(test_loader)
+        print(f"Test Loss: {average_test_loss:.4f}")
+        mlflow.log_metric("test_loss", average_test_loss)

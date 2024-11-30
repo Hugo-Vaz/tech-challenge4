@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
+import torch
 
 class CreateLTSMData:
     def __init__(self):
@@ -13,6 +14,8 @@ class CreateLTSMData:
         return self.train_test_split(np.array(x), np.array(y),test_size,seed)
     
     def train_test_split(self,x,y,test_size,seed):
-        return train_test_split(x, y, test_size=test_size, random_state=seed)
+        x = np.reshape(x, (x.shape[0], x.shape[1], 1))
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=seed)
     
+        return torch.tensor(x_train,dtype=torch.float32),torch.tensor(x_test,dtype=torch.float32),torch.tensor(y_train,dtype=torch.float32),torch.tensor(y_test,dtype=torch.float32)       
     
