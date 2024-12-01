@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 import mlflow
 import mlflow.pytorch
+from sklearn.preprocessing import MinMaxScaler
 
 class LSTM(nn.Module):
     def __init__(self, input_size,hidden_size,num_layers,output_size, device):
@@ -33,6 +32,7 @@ class LSTM(nn.Module):
             for sequences, labels in test_loader:
                 sequences, labels = sequences.to(device), labels.to(device)
                 outputs = model(sequences)
+                outputs = np.reshape(np.repeat(outputs,5, axis=-1),(len(outputs),5))[:,0]                
                 loss = criterion(outputs, labels)
                 test_loss += loss.item()
 

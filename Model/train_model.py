@@ -1,20 +1,21 @@
 import data_importer
 import data_creator
 import lstm_model
+import save_model as s3client
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 import torch.nn as nn
 import torch.optim as optim
 import mlflow
 import mlflow.pytorch
-from sklearn.metrics import mean_absolute_error, root_mean_squared_error
+from mlflow.models import infer_signature
 
-SEED = 42
-sequence_lenth = 20
-input_length = 1
+
 importer = data_importer.ImportStockData()
 creator = data_creator.CreateLTSMData()
 #HyperParams
+sequence_length = 20 #sequence_length ou n_past o quanto no passado olharemos pra predizer o alvo
+input_length = 5 #Número de features
 hidden_size = 100     # Number of hidden units in the LSTM
 num_layers = 3       # Number of LSTM layers
 output_size = 1      # Number of output units (e.g., regression output)
@@ -22,8 +23,8 @@ num_epochs = 150
 batch_size = 64
 learning_rate = 0.001
 
-stock_data = importer.get_stock_data(symbol="PETR4.SA",start="2020-01-01",end="2024-12-31")
-x_train, x_test, y_train, y_test = creator.build_data(stock_data,sequence_lenth,test_size=0.33, seed=SEED)
+stock_data, scaler = importer.get_stock_data(symbol="PETR4.SA",start="2020-01-01",end="2024-12-31")
+x_train, x_test, y_train, y_test = creator.build_data(stock_data,sequence_length,test_size=0.33)
 
 train_dataset = TensorDataset(x_train, y_train)
 test_dataset = TensorDataset(x_test, y_test)
@@ -75,3 +76,6 @@ with mlflow.start_run():
 
     # Evaluate the model
     model.evaluate_model(model, criterion, test_loader,device)
+
+    save_client = s3client.SaveModel()
+    save_client.save(model,scaler)
