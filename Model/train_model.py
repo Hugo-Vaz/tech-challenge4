@@ -9,7 +9,7 @@ import torch.optim as optim
 import mlflow
 import mlflow.pytorch
 from mlflow.models import infer_signature
-from Model.save_model import SaveModel
+from save_model import SaveModel
 
 
 importer = data_importer.ImportStockData()
