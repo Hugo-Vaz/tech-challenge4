@@ -1,0 +1,13 @@
+yfinance
+scikit-learn
+torch
+mlflow
+boto3==1.35.29
+fastapi
+uvicorn
+yfinance
+scikit-learn
+torch
+mlflow
+boto3==1.35.29
+numpy

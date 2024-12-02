@@ -9,6 +9,7 @@ import torch.optim as optim
 import mlflow
 import mlflow.pytorch
 from mlflow.models import infer_signature
+from Model.save_model import SaveModel
 
 
 importer = data_importer.ImportStockData()
@@ -40,7 +41,7 @@ optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 mlflow.set_experiment("LSTM Yfinance experiment")
 with mlflow.start_run():
-    # Log model parameters   
+    # Log model parameters
     mlflow.log_param("input_size", input_length)
     mlflow.log_param("hidden_size", hidden_size)
     mlflow.log_param("num_layers", num_layers)
@@ -52,9 +53,9 @@ with mlflow.start_run():
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
-        
+
         for i, (sequences, labels) in enumerate(train_loader):
-            sequences, labels = sequences.to(device), labels.to(device)           
+            sequences, labels = sequences.to(device), labels.to(device)
             # Forward pass
             outputs = model(sequences)
             loss = criterion(outputs, labels)
@@ -65,7 +66,7 @@ with mlflow.start_run():
             optimizer.step()
 
             running_loss += loss.item()
-            
+
             # Log metrics every 100 batches
             if i % 100 == 0:
                 print(f"Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}")
@@ -77,5 +78,6 @@ with mlflow.start_run():
     # Evaluate the model
     model.evaluate_model(model, criterion, test_loader,device)
 
-    save_client = s3client.SaveModel()
-    save_client.save(model,scaler)
+
+    save_client = SaveModel()
+    save_client.save(ml_model=model, scaler=scaler)

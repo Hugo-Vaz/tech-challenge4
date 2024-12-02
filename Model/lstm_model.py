@@ -19,12 +19,12 @@ class LSTM(nn.Module):
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
         c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(self.device)
-        
+
         # Forward propagate LSTM
         out, _ = self.lstm(x, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out
-    
+
     def evaluate_model(self,model, criterion,test_loader, device):
         model.eval()
         test_loss = 0.0
@@ -32,7 +32,7 @@ class LSTM(nn.Module):
             for sequences, labels in test_loader:
                 sequences, labels = sequences.to(device), labels.to(device)
                 outputs = model(sequences)
-                outputs = np.reshape(np.repeat(outputs,5, axis=-1),(len(outputs),5))[:,0]                
+                outputs = np.reshape(np.repeat(outputs,5, axis=-1),(len(outputs),5))[:,0]
                 loss = criterion(outputs, labels)
                 test_loss += loss.item()
 
