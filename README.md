@@ -2,6 +2,9 @@
 
 Repositório para o quarto desafio da pós gradução em Engenharia de ML
 
+## Vídeo Explicação
+[![Youtube video](https://img.youtube.com/vi/L6rS8jcr85I/0.jpg)](https://youtu.be/L6rS8jcr85I)
+
 # Objetivo
 
 Criaremos um modelo preditivo de redes neurais Long Short Term Memory (LSTM) para predizer o valor de fechamento da bolsa de valores, escolhemos a empresa Petrobras (PETR4.SA), utilizaremos o Pytorch para o desenvolvimento do modelo LSTM.
