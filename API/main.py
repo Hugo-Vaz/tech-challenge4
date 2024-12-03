@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from API.routes import health, train, predict, success
+from API.routes import health, train, predict
 
 app = FastAPI(
     title="Tech Challenge 4 API",
@@ -9,7 +9,6 @@ app = FastAPI(
 
 app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(train.router, prefix="/train", tags=["Training"])
-app.include_router(success.router, prefix="/success", tags=["Utility"])
 app.include_router(predict.router, prefix="/predict", tags=["Prediction"])
 
 
