@@ -4,19 +4,19 @@ import torch.nn as nn
 import torch.optim as optim
 import mlflow
 import mlflow.pytorch
-from mlflow.models import infer_signature
 
-from . import data_importer, data_creator, lstm_model, save_model as s3client
+from . import data_importer, data_creator, lstm_model, save_model
 
 def train():
     importer = data_importer.ImportStockData()
     creator = data_creator.CreateLTSMData()
-    #HyperParams
-    sequence_length = 20  # sequence_length ou n_past o quanto no passado olharemos pra predizer o alvo
-    input_length = 5  # Número de features
-    hidden_size = 100     # Number of hidden units in the LSTM
-    num_layers = 3       # Number of LSTM layers
-    output_size = 1      # Number of output units (e.g., regression output)
+
+    # HyperParams
+    sequence_length = 20    # sequence_length ou n_past o quanto no passado olharemos pra predizer o alvo
+    input_length = 5        # Número de features
+    hidden_size = 100       # Number of hidden units in the LSTM
+    num_layers = 3          # Number of LSTM layers
+    output_size = 1         # Number of output units (e.g., regression output)
     num_epochs = 150
     batch_size = 64
     learning_rate = 0.001
@@ -29,7 +29,7 @@ def train():
     train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
 
-    #Usa a GPU, caso disponível
+    # usa a GPU, caso disponível
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = lstm_model.LSTM(input_length, hidden_size, num_layers, output_size, device).to(device)
@@ -37,6 +37,7 @@ def train():
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     mlflow.set_experiment("LSTM Yfinance experiment")
+
     with mlflow.start_run():
         # Log model parameters
         mlflow.log_param("input_size", input_length)
@@ -73,10 +74,10 @@ def train():
         mlflow.pytorch.log_model(model, "lstm_yfinance_data_model")
 
         # Evaluate the model
-        model.evaluate_model(model, criterion, test_loader,device)
+        model.evaluate_model(model, criterion, test_loader, device)
 
-        save_client = s3client.SaveModel()
-        save_client.save(ml_model=model, scaler=scaler)
+        bucket_client = save_model.SaveModel()
+        bucket_client.save(ml_model=model, scaler=scaler)
 
 
 if __name__ == "__main__":

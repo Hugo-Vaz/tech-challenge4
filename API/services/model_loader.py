@@ -11,8 +11,6 @@ current_dir = Path(__file__).resolve().parent
 model_dir = current_dir.parent.parent / "Model"
 sys.path.append(str(model_dir))
 
-from Model.lstm_model import LSTM  # Import the LSTM model
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -49,7 +47,7 @@ def load_model_and_scaler():
         return model, scaler, device
 
     except boto3.exceptions.S3UploadFailedError as e:
-        logger.error("S3 upload failed: %s", e)
+        logger.error("upload failed: %s", e)
         raise
     except Exception as e:
         logger.error("Unexpected error: %s", e)

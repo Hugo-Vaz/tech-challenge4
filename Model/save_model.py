@@ -67,4 +67,5 @@ class SaveModel:
         Método principal para salvar o modelo e o scaler no MinIO.
         """
         modelo_serializado = self._serialize_model(ml_model, scaler)
+        
         self._upload_to_minio(bucket_name, file_key, modelo_serializado)

@@ -35,11 +35,11 @@ class PredictionResponse(BaseModel):
 def predict(request: PredictionRequest):
     """
     Endpoint para prever valores de fechamento de ações.
-    Para cada registro no payload, busca os 20 registros anteriores no S3
+    Para cada registro no payload, busca os 20 registros anteriores no Yahoo Finance
     e usa-os para gerar previsões.
     """
     try:
-        # Carregar o modelo treinado e o escalador do S3
+        # Carregar o modelo treinado e o scaler no MinIO/S3
         model, scaler, device = load_model_and_scaler()
         importer = ImportStockData()
         creator = CreateLTSMData()
