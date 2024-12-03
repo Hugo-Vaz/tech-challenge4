@@ -25,14 +25,18 @@ Log para conseguirmos prever o valor de fechamento vamos precisar da data (para 
 ### Payload esperado
 
 ```json
-[
-  {
-    "data": "2024-12-01"
-  },
-  {
-    "data": "2024-12-02"
-  }
-]
+{
+  "predictions": [
+    {
+      "fechamento": 0,
+      "abertura": 19.5,
+      "maxima": 19.22,
+      "minima": 16.41,
+      "volume": 24.01,
+      "data": "2024-12-02"
+    }
+  ]
+}
 ```
 
 # Getting Started
