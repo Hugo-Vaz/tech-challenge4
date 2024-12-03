@@ -22,34 +22,7 @@ Log para conseguirmos prever o valor de fechamento vamos precisar da data (para 
 - Usar esses 20 registros históricos para fazer a previsão.
 - Retornar as previsões correspondentes para cada item do payload.
 
-# Getting Started
-
-## Docker compose
-
-para criar o bucket rode o comando: docker-compose up --build
-
-## Criar o bucket no minIO
-
-Rode o create_bucket.py!
-
-## Rodar a api
-
-Instalar requirements: 
-
-```bash
-py -m pip install -r requirements.txt
-```
-
-Rodar APi: 
-```bash
-uvicorn API.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-```bash
-export MINIO_URL=http://localhost:9000
-export MINIO_ACCESS_KEY=minioadmin
-export MINIO_SECRET_KEY=minioadmin
-```
+### Payload esperado
 
 ```json
 [
@@ -61,3 +34,27 @@ export MINIO_SECRET_KEY=minioadmin
   }
 ]
 ```
+
+# Getting Started
+
+```bash
+# Configurar variaveis a serem usadas pelo container do Minio
+export MINIO_URL=http://localhost:9000
+export MINIO_ACCESS_KEY=minioadmin
+export MINIO_SECRET_KEY=minioadmin
+
+# Criar um container docker do Minio (onde serao salvo os modelos)
+docker-compose up --build -d
+
+# Cria o bucket dos modelos do Minio
+
+py create_bucket.py
+
+# Instalar bibliotecas
+py -m pip install -r requirements.txt
+
+# Rodar a API localmente
+uvicorn API.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+
