@@ -26,3 +26,27 @@ Rode o create_bucket.py!
 
 Instalar requirements: pip install -r requirements.txt
 Rodar APi: uvicorn API.main:app --host 0.0.0.0 --port 8000 --reload
+
+export MINIO_URL=http://localhost:9000
+export MINIO_ACCESS_KEY=minioadmin
+export MINIO_SECRET_KEY=minioadmin
+
+´´´
+[
+{
+"abertura": 25.5,
+"maxima": 26.8,
+"minima": 25.0,
+"volume": 1500000,
+"data": "2024-12-01"
+},
+{
+"abertura": 26.0,
+"maxima": 27.5,
+"minima": 25.5,
+"volume": 1700000,
+"data": "2024-12-02"
+}
+]
+
+´´´
