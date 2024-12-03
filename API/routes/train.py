@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-import subprocess
+from Model.train_model import train
 
 router = APIRouter()
 
@@ -10,25 +10,18 @@ def train_model():
     """
     try:
         # Executar o script train_model.py
-        result = subprocess.run(
-            ["python", "Model/train_model.py"],
-            text=True,
-            capture_output=True,
-            check=True
-        )
+        train()
 
         # Retornar o output do treinamento
         return {
             "status": "Success",
-            "output": result.stdout
         }
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         # Capturar erros no subprocesso
         raise HTTPException(
             status_code=500,
             detail={
                 "status": "Error",
-                "output": e.stdout,
-                "error": e.stderr
+                "output": str(e)
             }
         )

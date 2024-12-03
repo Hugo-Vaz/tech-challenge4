@@ -10,10 +10,20 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "main:app",
+                "API.main:app",
+                "--port", "8100",
                 "--reload"
             ],
-            "jinja": true
+            "jinja": true,
+            "justMyCode": false
+        },
+        {
+            "name": "Train Model",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scratchwork.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }

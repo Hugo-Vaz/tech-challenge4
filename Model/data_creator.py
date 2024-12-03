@@ -14,6 +14,7 @@ class CreateLTSMData:
         #pegaremos o percentual que usaremos, pra teste, encontraremos qual valor isso representa em nosso dataframe
         #assim separaremos em dois novos dataframes de treino e teste
         test_split=round(len(scaled_stock_data)*test_size)
+        # TODO: test_size está sendo aplicado no treino e não no teste
         train_data = scaled_stock_data[:test_split]
         test_data = scaled_stock_data[test_split:]
         x_train,y_train = self.split_features_test(train_data,n_past)

@@ -14,6 +14,14 @@ Criaremos um modelo preditivo de redes neurais Long Short Term Memory (LSTM) par
 Como o treinamento foi feito baseado em todas as features disponiveis: Close (sendo esse o target/alvo), High, Low, Open e Volume.
 Log para conseguirmos prever o valor de fechamento vamos precisar da data (para buscar os dados dos 20 dias mais recentes, visto que 20 foi nosso n_past definido), Hig,Low, Open e volume (onde todos são valores decimais)
 
+## No endpoint (post) do predict:
+
+- O payload pode conter vários registros (um ou mais).
+- Para cada registro no payload:
+- Buscar os últimos 20 registros históricos no bucket S3 com base na data fornecida nesse item do payload.
+- Usar esses 20 registros históricos para fazer a previsão.
+- Retornar as previsões correspondentes para cada item do payload.
+
 # Docker compose
 
 para criar o bucket rode o comando: docker-compose up --build

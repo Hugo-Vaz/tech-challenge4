@@ -1,16 +1,19 @@
+
 import numpy as np
 import torch
 
-def make_prediction(stock_data, model, scaler, device):
+def make_prediction(stock_data, model, scaler, device, n_past=20, n_future=1):
     """
     Realiza previsões usando o modelo LSTM e os dados fornecidos.
-
+    
     Args:
         stock_data (list): Lista de dados contendo as features de entrada.
         model: Modelo LSTM carregado.
         scaler: Scaler treinado para normalização.
         device: Dispositivo ('cuda' ou 'cpu').
-
+        n_past (int): Número de registros históricos usados para previsão.
+        n_future (int): Número de passos futuros a prever.
+    
     Returns:
         list: Lista de previsões revertidas para a escala original.
     """
@@ -18,33 +21,38 @@ def make_prediction(stock_data, model, scaler, device):
         # Processar os dados de entrada
         input_data = np.array([[d.abertura, d.maxima, d.minima, d.volume] for d in stock_data])
         scaled_input = scaler.transform(input_data)
-
-        # Verificar o tamanho mínimo necessário para gerar sequências
-        n_past = 20
+        
+        # Garantir que há dados suficientes para a previsão
         if len(scaled_input) < n_past:
-            raise ValueError("Mínimo de 20 entradas é necessário para previsão.")
-
-        # Criar sequências a partir dos dados escalados
-        sequences = [
-            scaled_input[i:i + n_past] for i in range(len(scaled_input) - n_past + 1)
-        ]
-        sequences = torch.tensor(np.array(sequences), dtype=torch.float32).to(device)
-
-        # Fazer a previsão com o modelo
-        model.eval()
-        with torch.no_grad():
-            predictions = model(sequences)
-
-        # Reverter a escala para os valores originais
-        # Adiciona zeros temporários para completar as features esperadas pelo scaler
-        dummy_features = np.zeros((predictions.shape[0], 4))
-        scaled_predictions = np.hstack((dummy_features, predictions.cpu().numpy()))
-        inverse_scaled_predictions = scaler.inverse_transform(scaled_predictions)
-
-        # Retorna apenas os valores de interesse (última coluna, que é a previsão)
-        return inverse_scaled_predictions[:, -1].tolist()
-
-    except ValueError as ve:
-        raise ve
+            raise ValueError(f"Mínimo de {n_past} entradas é necessário para previsão.")
+        
+        # Criar sequência inicial
+        initial_sequence = scaled_input[-n_past:]
+        
+        # Prever múltiplos passos futuros
+        predictions = []
+        current_sequence = initial_sequence
+        
+        for _ in range(n_future):
+            # Adicionar dimensão para prever
+            input_tensor = torch.tensor(current_sequence, dtype=torch.float32).unsqueeze(0).to(device)
+            
+            # Realizar previsão
+            predicted = model(input_tensor).detach().cpu().numpy()[0]
+            
+            # Guardar previsão
+            predictions.append(predicted)
+            
+            # Atualizar sequência
+            next_input = np.vstack([current_sequence[1:], predicted])
+            current_sequence = next_input
+        
+        # Reverter previsões para escala original
+        predictions = np.array(predictions).reshape(-1, 1)
+        predictions_scaled = np.repeat(predictions, scaled_input.shape[1], axis=-1)
+        predictions_original = scaler.inverse_transform(predictions_scaled)[:, 0]
+        
+        return predictions_original.tolist()
+    
     except Exception as e:
-        raise RuntimeError(f"Erro inesperado em 'make_prediction': {e}")
+        raise RuntimeError(f"Erro ao fazer previsão: {e}")
