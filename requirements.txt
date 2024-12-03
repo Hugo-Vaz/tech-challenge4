@@ -1,13 +1,18 @@
-yfinance
+# Bibliotecas para manipulação de dados e machine learning
+numpy
 scikit-learn
 torch
 mlflow
+
+# Biblioteca para obtenção de dados financeiros
+yfinance
+
+# Integração com o MinIO/S3
 boto3==1.35.29
+
+# Framework da API
 fastapi
 uvicorn
-yfinance
-scikit-learn
-torch
-mlflow
-boto3==1.35.29
-numpy
+
+# Validação de dados
+pydantic
