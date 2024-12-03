@@ -163,3 +163,5 @@ cython_debug/
 
 API/data/
 mlruns/
+
+data/
